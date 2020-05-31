@@ -1,10 +1,8 @@
 # electron-svelte-template
 
-Electron boilerplate with svelte and hotreload
+# Скрипты
 
-# Scripts
-
-`dev` - start autobuild svelte on change files and start electron with live reload.
-`start` - simply start electron app
-`package` - make package of app
-`make` - make installable file of app
+`dev` - Запуск приложения в режиме разработки с автобилдом Svelte при изменении файлов и Live Reload.
+`start` - Просто запуск приложения
+`package` - Создание переносимого пакета приложения
+`make` - Создание установочного файла
