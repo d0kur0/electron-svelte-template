@@ -90,3 +90,6 @@ out/
 
 # Svelte build
 public/build
+
+# Yarn lock file
+yarn.lock
