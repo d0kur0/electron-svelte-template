@@ -1,34 +1,75 @@
 <script>
-  export let name;
+  import { onMount } from "svelte";
+  import Router, { wrap, push, location, link } from "svelte-spa-router";
+  import { user } from "./stores/storesMap";
+
+  import Index from "/pages/Index.svelte";
+  import Albums from "/pages/Albums.svelte";
+  import Album from "/pages/Album.svelte";
+
+  const routes = {
+    "/": Index,
+    "/albums": Albums,
+    "/album/:id": Album,
+  };
+
+  onMount(async () => {
+    await user.auth();
+  });
 </script>
 
-<style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
+<style global>
+  @import "../node_modules/spectre.css/dist/spectre.min.css";
+  @import "../node_modules/spectre.css/dist/spectre-exp.css";
+  @import "../node_modules/spectre.css/dist/spectre-icons.min.css";
+
+  .auth-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
+  .home {
+    padding-bottom: 25px;
   }
 
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
+  .card-image img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+
+  .card-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .card {
+    margin-bottom: 10px;
   }
 </style>
 
-<main>
-  <h1>Hell1o {name}!</h1>
-  <p>
-    Visit the
-    <a href="https://svelte.dev/tutorial">Svelte tutorial</a>
-    to learn how to build Svelte apps.
-  </p>
-</main>
+<template>
+  {#if $location !== '/'}
+    <div class="home">
+      <a href="/" use:link class="btn btn-primary">
+        <i class="icon icon-apps" />
+        На главную
+      </a>
+    </div>
+  {/if}
+
+  {#if $user.isAuth}
+    <Router {routes} />
+  {:else}
+    <div class="auth-screen">
+      <div class="loading loading-lg" />
+    </div>
+  {/if}
+</template>

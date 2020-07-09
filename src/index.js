@@ -1,9 +1,9 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-// Enable autoreload in development mode
+// Enable auto reload in development mode
 if (isDevelopment) {
   require("electron-reload")(__dirname, {
     electron: path.join(__dirname, "../node_modules", ".bin", "electron"),
@@ -17,19 +17,38 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+// Register IPC Handlers
+const IPCHandlers = require("./ipcHandlers/ipcHandlersMap");
+IPCHandlers.forEach(handler => ipcMain.handle(handler.name, handler.callback));
+
 const createWindow = () => {
-  const width = isDevelopment ? 1240 : 800;
-  const height = 600;
+  const width = isDevelopment ? 1600 : 1600;
+  const height = 1000;
 
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width,
     height,
-    icon: path.join(__dirname, "../public/favicon.ico"),
+    //icon: path.join(__dirname, "../public/favicon.ico"),
     webPreferences: {
       nodeIntegration: true,
     },
   });
+
+  const openAuth = () => {
+    const options = {
+      clientID: 7532331, // your vk app id, required
+      display: "page", // page display desing, default 'popup'
+      scope: ["photos"], // access rights, whoose you want get,
+      responseType: "token", // response type, default 'token'
+    };
+
+    const oauth = new OAuthVK(require("electron").remote.BrowserWindow, options);
+
+    oauth.login().then(authData => {
+      console.log(authData);
+    });
+  };
 
   // Hide menu bar
   mainWindow.setMenu(null);
